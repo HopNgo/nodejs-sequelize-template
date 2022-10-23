@@ -92,7 +92,7 @@ export const getBookByID = async (req: Request, res: Response) => {
 export const updateBookByID = async (req: Request, res: Response) => {
   const bookID: string = req.params.bookID;
   const newUpdatedbook: Partial<IBook> = req.body;
-  console.log(bookID);
+
   await Book.update(
     {
       ...newUpdatedbook,
@@ -107,10 +107,33 @@ export const updateBookByID = async (req: Request, res: Response) => {
       return Book.findByPk(bookID);
     })
     .then((data) => {
-      console.log(data);
       res.status(200).json({ book: data });
     })
     .catch((error) => {
       res.status(400).json(error);
     });
+};
+
+export const deleteBookByID = async (req: Request, res: Response) => {
+  const bookID: string = req.params.bookID;
+  const deletedBook: Model<IBook> | null = await Book.findByPk(bookID);
+  if (deletedBook) {
+    await Book.destroy({
+      where: {
+        bookID: bookID,
+      },
+    })
+
+      .then(() => {
+        res.status(200).json({
+          book: deletedBook,
+          message: "Deleted this book successfully",
+        });
+      })
+      .catch((error) => {
+        res.status(400).json(error);
+      });
+  } else {
+    res.status(400).json({ message: "Book didn't not found" });
+  }
 };

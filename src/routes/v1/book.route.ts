@@ -2,6 +2,7 @@ import express, { Router } from "express";
 import {
   addNewBook,
   createTableBook,
+  deleteBookByID,
   getAllBook,
   getBookByID,
   updateBookByID,
@@ -18,5 +19,7 @@ router.get("/getAllBook", getAllBook);
 router.get("/getBookByID/:bookID", getBookByID);
 
 router.put("/updateBookByID/:bookID", updateBookByID);
+
+router.delete("/deleteBookByID/:bookID", deleteBookByID);
 
 export const bookRoutes = router;
