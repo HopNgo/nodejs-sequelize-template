@@ -40,6 +40,12 @@ const Book = sequelize.define(
 
 Book.belongsTo(Author, {
   foreignKey: "authorID",
+  targetKey: "authorID",
+});
+
+Author.hasMany(Book, {
+  foreignKey: "authorID",
+  sourceKey: "authorID",
 });
 
 export default Book;

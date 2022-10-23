@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import AuthorMigration from "../migrations/author.migration";
 import Author from "../models/author.model";
+import Book from "../models/book.model";
 
 export const createAuthorTable = (req: Request, res: Response) => {
   AuthorMigration.createTable()
@@ -50,6 +51,21 @@ export const addNewAuthor = (req: Request, res: Response) => {
         message: "add new user successfully",
       });
     })
+    .catch((error) => {
+      res.status(400).json(error);
+    });
+};
+
+export const getAllAuthor = async (req: Request, res: Response) => {
+  await Author.findAll({
+    include: {
+      model: Book,
+    },
+  })
+    .then((data) => {
+      res.status(200).json({ book: data });
+    })
+
     .catch((error) => {
       res.status(400).json(error);
     });
