@@ -34,6 +34,7 @@ const Book = sequelize.define(
   {
     timestamps: true,
     freezeTableName: true,
+    paranoid: true,
   }
 );
 

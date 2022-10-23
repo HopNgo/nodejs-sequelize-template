@@ -1,8 +1,10 @@
 import express, { Router } from "express";
 import {
   addNewBook,
-  createTableBook,
+  createBookTable,
+  deleteAllValuesBookTable,
   deleteBookByID,
+  dropBookTable,
   getAllBook,
   getBookByID,
   updateBookByID,
@@ -10,7 +12,11 @@ import {
 
 const router: Router = express.Router();
 
-router.get("/createTableBook", createTableBook);
+router.get("/createBookTable", createBookTable);
+
+router.get("/dropBookTable", dropBookTable);
+
+router.get("/truncateBookTable", deleteAllValuesBookTable);
 
 router.post("/addNewBook", addNewBook);
 

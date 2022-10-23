@@ -1,6 +1,5 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/squelize";
-import Book from "./book.model";
 
 const Author = sequelize.define(
   "author",
@@ -22,9 +21,8 @@ const Author = sequelize.define(
   {
     timestamps: true,
     freezeTableName: true,
+    paranoid: true,
   }
 );
-
-
 
 export default Author;

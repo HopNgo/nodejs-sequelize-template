@@ -1,12 +1,11 @@
 import { Request, Response } from "express";
 import { Model } from "sequelize";
-import IAuthor from "../interfaces/author";
 import IBook from "../interfaces/book";
 import BookMigration from "../migrations/book.migration";
 import Author from "../models/author.model";
 import Book from "../models/book.model";
 
-export const createTableBook = (req: Request, res: Response) => {
+export const createBookTable = (req: Request, res: Response) => {
   BookMigration.createTable()
     .then(() => {
       res
@@ -18,7 +17,8 @@ export const createTableBook = (req: Request, res: Response) => {
     });
 };
 
-export const dropTableBook = (req: Request, res: Response) => {
+
+export const dropBookTable = (req: Request, res: Response) => {
   BookMigration.dropTable()
     .then((data) => {
       res
@@ -28,8 +28,19 @@ export const dropTableBook = (req: Request, res: Response) => {
     .catch((error) => {
       res.status(400).json(error);
     });
-};
-
+  };
+  
+  export const deleteAllValuesBookTable= (req: Request, res: Response) => {
+    BookMigration.truncateTable()
+      .then(() => {
+        res
+          .status(200)
+          .json({ message: "All values in book table were removed" });
+      })
+      .catch((error) => {
+        res.status(400).json(error);
+      });
+  };
 export const addNewBook = (req: Request, res: Response) => {
   const { name, genre, photoUrl, authorID } = req.body;
   console.log(authorID);
@@ -116,24 +127,21 @@ export const updateBookByID = async (req: Request, res: Response) => {
 
 export const deleteBookByID = async (req: Request, res: Response) => {
   const bookID: string = req.params.bookID;
-  const deletedBook: Model<IBook> | null = await Book.findByPk(bookID);
-  if (deletedBook) {
-    await Book.destroy({
-      where: {
-        bookID: bookID,
-      },
+  await Book.destroy({
+    where: {
+      bookID: bookID,
+    },
+  })
+    .then(() => {
+      return Book.findByPk(bookID, { paranoid: false });
     })
-
-      .then(() => {
-        res.status(200).json({
-          book: deletedBook,
-          message: "Deleted this book successfully",
-        });
-      })
-      .catch((error) => {
-        res.status(400).json(error);
+    .then((data) => {
+      res.status(200).json({
+        book: data,
+        message: "Deleted this book successfully",
       });
-  } else {
-    res.status(400).json({ message: "Book didn't not found" });
-  }
+    })
+    .catch((error) => {
+      res.status(400).json(error);
+    });
 };
